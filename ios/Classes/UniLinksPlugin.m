@@ -50,7 +50,13 @@ static id _instance;
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   NSURL *url = (NSURL *)launchOptions[UIApplicationLaunchOptionsURLKey];
-  self.initialLink = [url absoluteString];
+  NSString* urlPath = [url absoluteString];
+  if (urlPath == nil) {
+    NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    urlPath = userInfo[@"deepLink"];
+  }
+
+  self.initialLink = urlPath;
   self.latestLink = self.initialLink;
   return YES;
 }
@@ -59,6 +65,7 @@ static id _instance;
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
   self.latestLink = [url absoluteString];
+  NSString* urlPath = [url path];
   return YES;
 }
 
